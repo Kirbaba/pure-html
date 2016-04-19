@@ -3,7 +3,16 @@ var sass = require('gulp-sass');
 var imageop = require('gulp-imagemin');
 var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
-var jsmin = require('gulp-jsmin');
+var browserSync  = require('browser-sync').create(),
+
+gulp.task('browser-sync', ['styles', 'scripts'], function() {
+    browserSync.init({
+        server: {
+            baseDir: "./app"
+        },
+        notify: false
+    });
+});
 
 gulp.task('minify-css', function() {
   return gulp.src('css/style.css')
@@ -57,5 +66,7 @@ gulp.task('watch', function() {
   gulp.watch('app/js/*', function() {
        gulp.run('compress');
   });
+  gulp.watch('sass/*.css').on("change", browserSync.reload);
+  gulp.watch('./*.html').on('change', browserSync.reload);
 
 });
