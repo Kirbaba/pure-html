@@ -1,3 +1,7 @@
+body {
+  
+}
+
 %clearfix {
   *zoom: 1;
   &:after {
@@ -19,12 +23,29 @@ ul {
 	list-style-type: none;
 }
 
-.block_title {
-	
+.container {
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
 }
 
-
-
-
-
-
+.container {
+  @extend %clearfix;
+}
+@media (min-width: 768px) {
+  .container {
+    width: 766px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 990px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 990px;
+  }
+}
