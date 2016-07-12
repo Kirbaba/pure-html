@@ -10,7 +10,11 @@ var gulp = require('gulp'), // Подключаем Gulp
     cache = require('gulp-cache'); // Подключаем библиотеку кеширования
     extender = require('gulp-html-extend'),
     sourcemaps = require('gulp-sourcemaps'),
-    rimraf = require('rimraf');
+    rimraf = require('rimraf'),
+    argv = require('yargs').argv,
+    gulpif = require('gulp-if'),
+    uglify = require('gulp-uglify'),
+    plumber = require('gulp-plumber');
 
 var postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer'),
@@ -20,7 +24,12 @@ var postcss = require('gulp-postcss'),
     stylefmt = require('stylefmt'),
     assets  = require('postcss-assets'),
     shortspacing = require('postcss-short-spacing'),
-    focus = require('postcss-focus');
+    focus = require('postcss-focus'),
+    sorting = require('postcss-sorting'),
+    fontmagic = require('postcss-font-magician'),
+    fixes = require('postcss-fixes');
+
+
 
 gulp.task('css-libs', function() { // Создаем таск Sass
     var processors = [
@@ -50,6 +59,10 @@ gulp.task('sass', function() { // Создаем таск Sass
     var processors = [
         assets,
         short,
+        fontmagic({
+            async: 'app/js/fontloader.js'
+        }),
+        fixes,
         autoprefixer(['last 5 versions', '> 5%', 'ie 8', 'ie 7'], {
             cascade: true
         }),
@@ -58,6 +71,7 @@ gulp.task('sass', function() { // Создаем таск Sass
             replace: false
         }),
         focus,
+        sorting(),
         stylefmt,
         cssnano
     ];
@@ -92,14 +106,14 @@ gulp.task('browser-sync', function() { // Создаем таск browser-sync
 
 gulp.task('compress', ['clean'], function() {
   return gulp.src('app/js/*.js')
-  .pipe(sourcemaps.init())
+  .pipe(plumber())
   .pipe(concat('script.js'))
   .pipe(rename({
       suffix: ".min",
       extname: ".js"
   }))
-  .pipe(uglify())
-  .pipe(sourcemaps.write('', { sourceRoot: 'js-source' }))
+  .pipe(gulpif(argv.production, uglify())) // <- добавляем вот эту строчку
+  .pipe(plumber.stop())
   .pipe(gulp.dest('js'));
 
 });
