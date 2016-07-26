@@ -31,18 +31,28 @@ $largeScreen: 1400px;
 
 @mixin respondTo($media) {
 	@if $media == smartphone {
-	  @media (min-width: $smartphone) { @content; }
+	  @media (min-width: $smartphone) {
+			@content;
+		}
 	}
 	@else if $media == tablet {
-	  @media (min-width: $tabletPortrait) and (max-width: $tabletLandscape) { @content; }
+	  @media (min-width: $tabletPortrait) and (max-width: $tabletLandscape) {
+			@content;
+		}
 	}
 	@else if $media == smallScreen {
-	  @media (min-width: $desktop) { @content; }
+	  @media (min-width: $desktop) {
+			@content;
+		}
 	}
 	@else if $media == desktop {
-	  @media (min-width: $desktop) { @content; }
+	  @media (min-width: $desktop) {
+			@content;
+		}
 	}
   @else if $media == largeScreen {
-    @media (min-width: $largeScreen) { @content; }
+    @media (min-width: $largeScreen) {
+			@content;
+		}
   }
 }

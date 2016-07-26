@@ -2,7 +2,6 @@ var gulp = require('gulp'), // Подключаем Gulp
     sass = require('gulp-sass'), //Подключаем Sass пакет,
     browserSync = require('browser-sync'), // Подключаем Browser Sync
     concat = require('gulp-concat'), // Подключаем gulp-concat (для конкатенации файлов)
-    uglify = require('gulp-uglifyjs'), // Подключаем gulp-uglifyjs (для сжатия JS)
     rename = require('gulp-rename'), // Подключаем библиотеку для переименования файлов
     del = require('del'), // Подключаем библиотеку для удаления файлов и папок
     imagemin = require('gulp-imagemin'), // Подключаем библиотеку для работы с изображениями
@@ -26,8 +25,10 @@ var postcss = require('gulp-postcss'),
     shortspacing = require('postcss-short-spacing'),
     focus = require('postcss-focus'),
     sorting = require('postcss-sorting'),
-    fontmagic = require('postcss-font-magician'),
     fixes = require('postcss-fixes');
+    stylelint = require('stylelint');
+    messages = require('postcss-browser-reporter');
+
 
 
 
@@ -59,21 +60,23 @@ gulp.task('sass', function() { // Создаем таск Sass
     var processors = [
         assets,
         short,
-        fontmagic({
-            async: 'app/js/fontloader.js'
-        }),
-        fixes,
+        focus,
         autoprefixer(['last 5 versions', '> 5%', 'ie 8', 'ie 7'], {
             cascade: true
         }),
+        sorting(),
         pxtorem({
             rootValue: 14,
             replace: false
         }),
-        focus,
-        sorting(),
         stylefmt,
-        cssnano
+        stylelint(),
+
+        messages({
+          selector: 'body:before'
+        }),
+        fixes,
+        cssnano,
     ];
     return gulp.src('app/sass/**/*.scss')
         .pipe(sourcemaps.init())
@@ -93,7 +96,7 @@ gulp.task('sass', function() { // Создаем таск Sass
 gulp.task('browser-sync', function() { // Создаем таск browser-sync
     browserSync({ // Выполняем browserSync
         proxy: {
-            target: '' // Директория для сервера - app
+            target: 'pure-html' // Директория для сервера - app
         },
         ghostMode: {
             clicks: true,
