@@ -119,20 +119,27 @@ gulp.task("clean", function (cb) {
     rimraf('./js/script.min.js', cb);
 });
 
-gulp.task('extend', function () {
+gulp.task('extend-pages', function () {
     gulp.src('./app/html/pages/*.html')
         .pipe(extender({annotations:true,verbose:false})) // default options
         .pipe(gulp.dest('./'))
-
 });
 
-gulp.task('watch', ['compress', 'extend', 'css-libs', 'img', 'sass'], function() {
+gulp.task('extend-blocks', function () {
+    gulp.src('./app/html/*.html')
+        .pipe(extender({annotations:true,verbose:false})) // default options
+        .pipe(gulp.dest('./'))
+});
+
+gulp.task('watch', ['compress', 'extend-pages', 'css-libs', 'img', 'sass'], function() {
     gulp.watch('app/libs/**/*', ['css-libs']); // Наблюдение за папкой libs
     gulp.watch('app/img/**/*', ['img']);// Наблюдение за папкой img
     gulp.watch('app/sass/**/*.scss', ['sass']); // Наблюдение за sass файлами в папке sass
-    gulp.watch(['app/html/*.html'], ['extend']);// Наблюдение за HTML-файлами
+    gulp.watch(['app/html/pages/*.html'], ['extend-pages']);// Наблюдение за HTML-файлами в папке html/pages
+    gulp.watch(['app/html/*.html'], ['extend-blocks']);// Наблюдение за HTML-файлами в папке html
     gulp.watch('app/js/**/*.js', ['compress']); // Наблюдение за js-файлами
 });
+
 
 gulp.task('img', function() {
     return gulp.src('app/img/**/*')
